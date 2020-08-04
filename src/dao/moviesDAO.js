@@ -61,7 +61,12 @@ export default class MoviesDAO {
       // and _id. Do not put a limit in your own implementation, the limit
       // here is only included to avoid sending 46000 documents down the
       // wire.
-      cursor = await movies.find().limit(1)
+
+      // Chapter 1: Driver Setup
+      // Ticket: Projection
+      // status code: 5a94762f949291c47fa6474d
+      cursor = await movies.find({countries:{$in:countries}})
+      cursor.project({_id:1, "title":1})
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return []
