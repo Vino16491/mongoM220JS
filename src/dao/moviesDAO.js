@@ -121,6 +121,11 @@ export default class MoviesDAO {
 
     // TODO Ticket: Text and Subfield Search
     // Construct a query that will search for the chosen genre.
+
+    // Chapter 1: Driver Setup
+    // Ticket: Text and Subfield Search
+    // 5a96a6a29c453a40d04922cc
+
     const query = {genres:{$in:searchGenre}}
     const project = {}
     const sort = DEFAULT_SORT
@@ -264,7 +269,12 @@ export default class MoviesDAO {
 
     // TODO Ticket: Paging
     // Use the cursor to only return the movies that belong on the current page
-    const displayCursor = cursor.limit(moviesPerPage)
+
+    // Chapter 2
+    // User Face Backend
+    // Paging
+    // 5a9824d057adff467fb1f526
+    const displayCursor = cursor.skip(moviesPerPage * page).limit(moviesPerPage)
 
     try {
       const moviesList = await displayCursor.toArray()
