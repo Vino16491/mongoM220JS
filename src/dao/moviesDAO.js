@@ -201,11 +201,18 @@ export default class MoviesDAO {
     to complete this task, but you might have to do something about `const`.
     */
 
+    // Chapter 2
+    // User-Facing Backend
+    // Faceted Search
+    // 5aa7d3948adcc3fb770f06fb
     const queryPipeline = [
       matchStage,
       sortStage,
       // TODO Ticket: Faceted Search
       // Add the stages to queryPipeline in the correct order.
+      skipStage,
+      limitStage,
+      facetStage
     ]
 
     try {
