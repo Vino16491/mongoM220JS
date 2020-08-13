@@ -65,7 +65,7 @@ export default class UsersDAO {
       // TODO Ticket: Durable Writes
       // Use a more durable Write Concern for this operation.
       
-      await users.insertOne({ ...userInfo })
+      await users.insertOne({ ...userInfo },{w:"majority"})
       return { success: true }
     } catch (e) {
       if (String(e).startsWith("MongoError: E11000 duplicate key error")) {
@@ -169,14 +169,16 @@ export default class UsersDAO {
       Update the "preferences" field in the corresponding user's document to
       reflect the new information in preferences.
       */
-
+      // Chapter 2: User-Facing Backend
+      // 5aabe31503ac76bc4f73e267
+      // Ticket: User Preferences
       preferences = preferences || {}
 
       // TODO Ticket: User Preferences
       // Use the data in "preferences" to update the user's preferences.
       const updateResponse = await users.updateOne(
-        { someField: someValue },
-        { $set: { someOtherField: someOtherValue } },
+        { email },
+        { $set: { preferences} },
       )
 
       if (updateResponse.matchedCount === 0) {
