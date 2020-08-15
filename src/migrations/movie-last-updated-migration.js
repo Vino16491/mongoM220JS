@@ -17,6 +17,7 @@ require("dotenv").config()
 // Immediately Invoked Function Expression (IIFE). It's being used to wrap this logic in an asynchronous function
 // so we can use await within.
 // To read more about this type of expression, refer to https://developer.mozilla.org/en-US/docs/Glossary/IIFE
+// 5ad9f6a64fec134d116fb06f
 ;(async () => {
   try {
     const host = process.env.MFLIX_DB_URI
@@ -28,12 +29,17 @@ require("dotenv").config()
     // check that its type is a string
     // a projection is not required, but may help reduce the amount of data sent
     // over the wire!
-    const predicate = { somefield: { $someOperator: true } }
-    const projection = {}
+    // setting up query to search document
+    const predicate = { lastupdated: { $exists: true, $type:"string" } }
+    const projection = {lastupdated:1}
+
+    // Finding documents which are needs to be updated
     const cursor = await mflix
       .collection("movies")
       .find(predicate, projection)
       .toArray()
+
+      // fetching, converting and storing documents to variable
     const moviesToMigrate = cursor.map(({ _id, lastupdated }) => ({
       updateOne: {
         filter: { _id: ObjectId(_id) },
@@ -42,12 +48,18 @@ require("dotenv").config()
         },
       },
     }))
+
+    // Writing log for number of documents discovered
     console.log(
       "\x1b[32m",
       `Found ${moviesToMigrate.length} documents to update`,
     )
     // TODO: Complete the BulkWrite statement below
-    const { modifiedCount } = await "some bulk operation"
+
+    // Using object variable and updating document in bulk
+    const { modifiedCount } = await mflix
+    .collection("movies")
+    .bulkWrite(moviesToMigrate)
 
     console.log("\x1b[32m", `${modifiedCount} documents updated`)
     client.close()
